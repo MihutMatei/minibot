@@ -39,10 +39,10 @@
  import com.qualcomm.robotcore.hardware.DcMotorSimple;
  import com.qualcomm.robotcore.hardware.Servo;
  import com.qualcomm.robotcore.util.ElapsedTime;
-
+ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-
+ @Disabled
  @TeleOp(name="NEWDRIVE", group="Linear Opmode")
 
  public class NewDrive extends LinearOpMode {

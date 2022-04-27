@@ -39,9 +39,6 @@
  import com.qualcomm.robotcore.hardware.Servo;
  import com.qualcomm.robotcore.util.ElapsedTime;
  import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
-
-
  @TeleOp(name="MINIDRIVE", group="Linear Opmode")
 
  public class MiniDrive extends LinearOpMode {
@@ -69,10 +66,10 @@
 
          while (opModeIsActive()) {
              rotire.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-             telemetry.addData("servo", cleste.getPosition());
-
-             telemetry.update();
+//
+//             telemetry.addData("servo", cleste.getPosition());
+//             telemetry.addData("rotire", rotire.getCurrentPosition());
+//             telemetry.update();
              ElapsedTime runtime1 = new ElapsedTime(0);
 
              drive.setWeightedDrivePower(
@@ -104,6 +101,7 @@
                  carusel.setPower(-0.75);
              }
              if(gamepad1.dpad_up)carusel.setPower(0);
+
              rotire.setPower(-gamepad2.left_stick_y/2);
 
 

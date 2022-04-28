@@ -62,10 +62,13 @@
 
          waitForStart();
          drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        rotire.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         rotire.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
          while (opModeIsActive()) {
              rotire.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
 //
 //             telemetry.addData("servo", cleste.getPosition());
 //             telemetry.addData("rotire", rotire.getCurrentPosition());
@@ -74,15 +77,15 @@
 
              drive.setWeightedDrivePower(
                      new Pose2d(
-                             gamepad1.left_stick_y,
-                             gamepad1.left_stick_x ,
-                             -gamepad1.right_stick_x
+                             gamepad1.left_stick_y*(0.5),
+                             gamepad1.left_stick_x*(0.5) ,
+                             -gamepad1.right_stick_x*(0.5)
                      )
 
              );
              drive.update();
 
-             if(gamepad1.dpad_right)
+             if(gamepad2.dpad_right)
              {
                  runtime.reset();
                  while(runtime.time() < 1.2 && !gamepad1.dpad_up) {
@@ -91,7 +94,7 @@
 
                  carusel.setPower(0.75);
              }
-             if(gamepad1.dpad_left)
+             if(gamepad2.dpad_left)
              {
                  runtime.reset();
                  while(runtime.time() < 1.2 && !gamepad1.dpad_up) {
@@ -100,19 +103,63 @@
 
                  carusel.setPower(-0.75);
              }
-             if(gamepad1.dpad_up)carusel.setPower(0);
+            if(gamepad2.dpad_up)carusel.setPower(0);
+             if(gamepad2.cross)
+             {
+                 rotire.setTargetPosition(-1300);
+                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                 rotire.setPower(-0.3);
+             }
+             if(gamepad2.square)
+             {
+                 rotire.setTargetPosition(-1600);
+                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                 rotire.setPower(-0.3);
+             }
+             if(gamepad2.circle)
+             {
+                 rotire.setTargetPosition(-1800);
+                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                 rotire.setPower(-0.3);
+             }
+             if(gamepad2.triangle)
+             {
+                 rotire.setTargetPosition(5);
+                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                 rotire.setPower(0.3);
+             }
+             if(gamepad2.dpad_up)
+             {
+                 rotire.setTargetPosition(-1765);
+                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                 rotire.setPower(-0.3);
+             }
+             if(gamepad2.dpad_down)
+             {
+                 rotire.setTargetPosition(-1150);
+                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                 rotire.setPower(-0.3);
+             }
+             if(gamepad2.right_bumper)
+             {
+                 rotire.setTargetPosition(-1250);
+                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                 rotire.setPower(-0.3);
+             }
 
-             rotire.setPower(-gamepad2.left_stick_y/2);
+             //rotire.setPower(-gamepad2.left_stick_y/2);
 
 
              if(gamepad1.cross)
              {
-                 cleste.setPosition(0.4);
+                 cleste.setPosition(0.5);
              }
              if(gamepad1.square)
              {
-                 cleste.setPosition(0.6);
+                 cleste.setPosition(1);
              }
+             telemetry.addData("Rotire",rotire.getCurrentPosition());
+             telemetry.update();
 
          }
      }

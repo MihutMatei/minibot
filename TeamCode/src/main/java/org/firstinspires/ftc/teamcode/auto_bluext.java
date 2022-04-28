@@ -67,6 +67,7 @@ public class auto_bluext extends LinearOpMode {
 
 
 
+        
 
         //x -9  y 7
 

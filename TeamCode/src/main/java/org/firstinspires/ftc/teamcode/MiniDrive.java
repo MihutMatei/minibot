@@ -85,7 +85,7 @@
              );
              drive.update();
 
-             if(gamepad2.dpad_right)
+             if(gamepad1.dpad_right)
              {
                  runtime.reset();
                  while(runtime.time() < 1.2 && !gamepad1.dpad_up) {
@@ -94,7 +94,7 @@
 
                  carusel.setPower(0.75);
              }
-             if(gamepad2.dpad_left)
+             if(gamepad1.dpad_left)
              {
                  runtime.reset();
                  while(runtime.time() < 1.2 && !gamepad1.dpad_up) {
@@ -108,31 +108,31 @@
              {
                  rotire.setTargetPosition(-1300);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(-0.3);
+                 rotire.setPower(-0.6);
              }
              if(gamepad2.square)
              {
                  rotire.setTargetPosition(-1600);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(-0.3);
+                 rotire.setPower(-0.6);
              }
              if(gamepad2.circle)
              {
                  rotire.setTargetPosition(-1800);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(-0.3);
+                 rotire.setPower(-0.6);
              }
              if(gamepad2.triangle)
              {
                  rotire.setTargetPosition(5);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(0.3);
+                 rotire.setPower(0.6);
              }
              if(gamepad2.dpad_up)
              {
                  rotire.setTargetPosition(-1765);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(-0.3);
+                 rotire.setPower(-0.6);
              }
              if(gamepad2.dpad_down)
              {

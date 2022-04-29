@@ -74,6 +74,9 @@ public class auto_bluext extends LinearOpMode {
                 .turn(Math.toRadians(-90))
                 .back(25)
                 .build();
+        Trajectory alignwithhub = drive.trajectoryBuilder(turnDuck.end())
+                .lineToSplineHeading( new Pose2d(-33,15,Math.toRadians(95)))
+                .build();
 
 
 
@@ -110,6 +113,7 @@ public class auto_bluext extends LinearOpMode {
         double left_avg,right_avg;
 
         int zone = 0;
+        int compensare =0;
         sleep(5000);
         while (!opModeIsActive() && !isStopRequested()) {
             //telemetry.addData("Zona", pipeline.getZone());
@@ -136,6 +140,7 @@ public class auto_bluext extends LinearOpMode {
         if (!opModeIsActive()) return;
 
         cleste.setPosition(1);
+        sleep(500);
         rotire.setTargetPosition(-50);
         rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rotire.setPower(-0.5);
@@ -144,25 +149,55 @@ public class auto_bluext extends LinearOpMode {
         runtime2.reset();
         while(runtime2.time()<5)
         {
-            carusel.setPower(-0.45);
+            carusel.setPower(0.45);
         }
         carusel.setPower(0);
         sleep(500);
-
+        drive.followTrajectory(alignwithhub);
         switch (zone)
         {
             case 1:
-
+            rotire.setTargetPosition(-1800);
+            rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rotire.setPower(-0.5);
 
                 break;
             case 2:
-
+            rotire.setTargetPosition(-1400);
+            rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rotire.setPower(-0.5);
+            compensare=8;
                 break;
 
             case 3:
-
+            rotire.setTargetPosition(-1200);
+            rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rotire.setPower(-0.5);
+            compensare=5;
                 break;
         }
+        sleep(500);
+        Trajectory forwardtohub = drive. trajectoryBuilder(drive.getPoseEstimate())
+                .back(30-compensare)
+                .build();
+        drive.followTrajectory(forwardtohub);
+        sleep(500);
+        cleste.setPosition(0.5);
+        sleep(500);
+        Trajectory realign = drive. trajectoryBuilder(drive.getPoseEstimate())
+                .forward(20)
+                .addTemporalMarker(0.5,()->{
+                    rotire.setTargetPosition(0);
+                    rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    rotire.setPower(0.5);
+                })
+                .build();
+        drive.followTrajectory(realign);
+        sleep(500);
+        Trajectory parkstorage = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineTo(new Vector2d(-20,20))
+                .build();
+        drive.followTrajectory(parkstorage);
 
 
 

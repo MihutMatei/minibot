@@ -30,19 +30,16 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.firstinspires.ftc.teamcode.drive.advanced.SamplePipeline;
 import org.firstinspires.ftc.teamcode.drive.advanced.DetectionPipeline;
-@Disabled
-@Autonomous(name = "REDEXT")
+
+@Autonomous(name = "Redext")
 public class auto_redext extends LinearOpMode {
     OpenCvCamera webcam;
     SamplePipeline pipeline;
     DetectionPipeline detectionPipeline;
-    private DcMotorEx slider;
-    private DcMotorEx intake;
-    private DcMotor carusel;
-    private Servo cuva;
-    private DcMotorEx rotire;
     boolean bCameraOpened = false;
-    private ColorSensor color;
+    private DcMotorEx carusel;
+    private DcMotorEx rotire;
+    private Servo cleste;
 
     //unfinished
 
@@ -52,12 +49,11 @@ public class auto_redext extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        slider = hardwareMap.get(DcMotorEx.class, "slider");
-        intake = hardwareMap.get(DcMotorEx.class, "intake");
-        carusel = hardwareMap.get(DcMotor.class, "carusel");
-        cuva = hardwareMap.get(Servo.class,"cuva");
-        rotire = hardwareMap.get(DcMotorEx.class,"rotire");
-        color = hardwareMap.get(ColorSensor.class, "color");
+        carusel =hardwareMap.get(DcMotorEx.class,"carusel");
+        rotire =hardwareMap.get(DcMotorEx.class,"rotire");
+        cleste =hardwareMap.get(Servo.class,"cleste");
+
+
 
         carusel.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -74,31 +70,15 @@ public class auto_redext extends LinearOpMode {
         Pose2d startPose = new Pose2d(0, 0, 0);
 
         drive.setPoseEstimate(startPose);
-
-        Trajectory turnDuck = drive.trajectoryBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-10,-25,Math.toRadians(180)))
+        TrajectorySequence turnDuck = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading( new Pose2d(7,-28,Math.toRadians(135)))
                 .build();
-
-        Trajectory allignWithHub = drive.trajectoryBuilder(turnDuck.end())
-                .lineToSplineHeading(new Pose2d(-45,-25,Math.toRadians(90)))
-                .build();
-
-
-        Trajectory forwardToHub = drive.trajectoryBuilder(allignWithHub.end())
-                .forward(21)
-
-                .build();
-        Trajectory forwardToHub2 = drive.trajectoryBuilder(allignWithHub.end())
-                .forward(27)
-
+        Trajectory alignwithhub = drive.trajectoryBuilder(turnDuck.end())
+                .lineToSplineHeading( new Pose2d(-35,-23,Math.toRadians(-93)))
                 .build();
 
 
-       /* TrajectorySequence parkWarehouse = drive.trajectorySequenceBuilder(parkStorage.end())
-                .strafeLeft(5)
-                .lineToSplineHeading(new Pose2d(0,0,Math.toRadians(-90)))
-                .forward(80)
-                .build();*/
+
         //
 
         //x -9  y 7
@@ -132,20 +112,21 @@ public class auto_redext extends LinearOpMode {
         double left_avg,right_avg;
 
         int zone = 0;
+        int compensare =0;
         sleep(5000);
         while (!opModeIsActive() && !isStopRequested()) {
             //telemetry.addData("Zona", pipeline.getZone());
-            cuva.setPosition(0.09);
+
 
             left_avg = (detectionPipeline.getZoneLuminosity(1) + detectionPipeline.getZoneLuminosity(2)) / 2;
             right_avg = (detectionPipeline.getZoneLuminosity(3) + detectionPipeline.getZoneLuminosity(4)) / 2;
-
+            //scimbat zona 1 cu zona 3 pt ca capera era poz gresit
             if (left_avg <= 125)
-                zone = 1;
-            else if (right_avg <= 125)
+                zone = 3;
+            else if (right_avg <= 124.3)
                 zone = 2;
             else
-                zone = 3;
+                zone = 1;
 
             telemetry.addData("Zone", zone);
             telemetry.addData("Left", left_avg);
@@ -153,11 +134,17 @@ public class auto_redext extends LinearOpMode {
 
             telemetry.update();
         }
-        slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        rotire.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         if (!opModeIsActive()) return;
 
-        drive.followTrajectory(turnDuck);
+        cleste.setPosition(1);
+        sleep(500);
+        rotire.setTargetPosition(-50);
+        rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rotire.setPower(-0.5);
+        sleep(500);
+        drive.followTrajectorySequence(turnDuck);
         runtime2.reset();
         while(runtime2.time()<5)
         {
@@ -165,92 +152,58 @@ public class auto_redext extends LinearOpMode {
         }
         carusel.setPower(0);
         sleep(500);
-        drive.followTrajectory(allignWithHub);
-        sleep(500);
-
-
+        drive.followTrajectory(alignwithhub);
         switch (zone)
         {
             case 1:
-                slider.setTargetPosition(-200);
-                slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slider.setPower(0.6);
                 rotire.setTargetPosition(-1800);
                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotire.setPower(-0.8);
+                rotire.setPower(-0.5);
 
                 break;
             case 2:
-                slider.setTargetPosition(-1200);
-                slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                slider.setPower(0.6);
-                rotire.setTargetPosition(-1850);
+                rotire.setTargetPosition(-1400);
                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotire.setPower(-0.8);
+                rotire.setPower(-0.5);
+                compensare=8;
                 break;
 
             case 3:
-                slider.setTargetPosition(-1500);
-                slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                slider.setPower(0.6);
-                rotire.setTargetPosition(-1550);
+                rotire.setTargetPosition(-1200);
                 rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotire.setPower(-0.8);
+                rotire.setPower(-0.5);
+                compensare=6;
                 break;
         }
-
-        sleep(2000);
-        if(zone==1) drive.followTrajectory(forwardToHub2);
-        else drive.followTrajectory(forwardToHub);
-
-        cuva.setPosition(0.5); // drop cube
-
-        sleep(800);
-        cuva.setPosition(0.09);
-        sleep(200);
-        Pose2d final_pose=drive.getPoseEstimate();
-
-        TrajectorySequence parkStorage = drive.trajectorySequenceBuilder(final_pose)
-                .lineToLinearHeading(new Pose2d(-40,-20,Math.toRadians(90)))
+        sleep(500);
+        Trajectory forwardtohub = drive. trajectoryBuilder(drive.getPoseEstimate())
+                .back(33-compensare)
+                .build();
+        drive.followTrajectory(forwardtohub);
+        sleep(500);
+        cleste.setPosition(0.5);
+        sleep(500);
+        Trajectory realign = drive. trajectoryBuilder(drive.getPoseEstimate())
+                .forward(30)
                 .addTemporalMarker(0.5,()->{
-                    slider.setTargetPosition(-1500);
-                    slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                    slider.setPower(0.6);
-                    rotire.setTargetPosition(-1300);
+                    rotire.setTargetPosition(0);
                     rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    rotire.setPower(-0.8);
-
+                    rotire.setPower(0.5);
                 })
-                .addTemporalMarker(1.3,()->{
-                    slider.setTargetPosition(0);
-                    slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-                    slider.setPower(-0.7);
-                    rotire.setTargetPosition(5);
-                    rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    rotire.setPower(0.6);
-                })
-
                 .build();
-
-        Trajectory endTraj = drive.trajectoryBuilder(parkStorage.end())
-                .lineToLinearHeading(new Pose2d(-32,-26,Math.toRadians(-90)))
+        drive.followTrajectory(realign);
+        sleep(500);
+        Trajectory parkstorage = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineTo(new Vector2d(-22,-26))
                 .build();
+        drive.followTrajectory(parkstorage);
 
-        drive.followTrajectorySequence(parkStorage);
-        sleep(1500);
-        drive.followTrajectory(endTraj);
 
-        TrajectorySequence parkInWarehouse = drive.trajectorySequenceBuilder(endTraj.end())
-                .lineToLinearHeading(new Pose2d(1,0,Math.toRadians(-90)))
-                .back(82)
-                .build();
 
-        drive.followTrajectorySequence(parkInWarehouse);
-        //drive.followTrajectorySequence(parkWarehouse);
+
+
+
+
+
     }
 }

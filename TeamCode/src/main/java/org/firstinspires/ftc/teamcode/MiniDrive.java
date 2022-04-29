@@ -128,13 +128,13 @@
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                  rotire.setPower(0.6);
              }
-             if(gamepad2.dpad_up)
+             if(gamepad2.dpad_down)
              {
-                 rotire.setTargetPosition(-1765);
+                 rotire.setTargetPosition(-1770);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                  rotire.setPower(-0.6);
              }
-             if(gamepad2.dpad_down)
+             if(gamepad2.dpad_up)
              {
                  rotire.setTargetPosition(-1150);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);

@@ -103,7 +103,7 @@
 
                  carusel.setPower(-0.75);
              }
-            if(gamepad2.dpad_up)carusel.setPower(0);
+            if(gamepad1.dpad_up)carusel.setPower(0);
              if(gamepad2.cross)
              {
                  rotire.setTargetPosition(-1300);

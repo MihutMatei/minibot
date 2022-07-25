@@ -123,9 +123,9 @@ public class auto_bluext extends LinearOpMode {
             left_avg = (detectionPipeline.getZoneLuminosity(1) + detectionPipeline.getZoneLuminosity(2)) / 2;
             right_avg = (detectionPipeline.getZoneLuminosity(3) + detectionPipeline.getZoneLuminosity(4)) / 2;
             //scimbat zona 1 cu zona 3 pt ca capera era poz gresit
-            if (left_avg <= 125)
+            if (left_avg <= 126)
                 zone = 3;
-            else if (right_avg <= 125)
+            else if (right_avg <= 122)
                 zone = 2;
             else
                 zone = 1;
@@ -164,7 +164,7 @@ public class auto_bluext extends LinearOpMode {
 
                 break;
             case 2:
-            rotire.setTargetPosition(-1400);
+            rotire.setTargetPosition(-1575);
             rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rotire.setPower(-0.5);
             compensare=8;
@@ -174,12 +174,12 @@ public class auto_bluext extends LinearOpMode {
             rotire.setTargetPosition(-1200);
             rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rotire.setPower(-0.5);
-            compensare=5;
+            compensare=8;
                 break;
         }
         sleep(500);
         Trajectory forwardtohub = drive. trajectoryBuilder(drive.getPoseEstimate())
-                .back(30-compensare)
+                .back(34-compensare)
                 .build();
         drive.followTrajectory(forwardtohub);
         sleep(500);

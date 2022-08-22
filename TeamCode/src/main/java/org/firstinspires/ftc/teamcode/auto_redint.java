@@ -31,7 +31,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import org.firstinspires.ftc.teamcode.drive.advanced.SamplePipeline;
 import org.firstinspires.ftc.teamcode.drive.advanced.DetectionPipeline;
 
-@Autonomous(name = "Redint")
+@Autonomous(name = "redint")
 public class auto_redint extends LinearOpMode {
     OpenCvCamera webcam;
     SamplePipeline pipeline;
@@ -67,29 +67,50 @@ public class auto_redint extends LinearOpMode {
 
         ElapsedTime runtime2 = new ElapsedTime(0);
 
-        Pose2d startPose = new Pose2d(0, 0, 0);
+        Pose2d startPose = new Pose2d(11, -59, Math.toRadians(-90));
 
         drive.setPoseEstimate(startPose);
 
-        TrajectorySequence linie = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .turn(Math.toRadians(90))
-                .strafeRight(10)
-                .forward(30)
-                .strafeLeft(30)
+        TrajectorySequence aliniere1 = drive.trajectorySequenceBuilder(startPose)
+                .lineToLinearHeading(new Pose2d(-11.5,-43,Math.toRadians(-90)))
                 .build();
 
 
-
-
-        //x -9  y 7
-
-        // x -1 y 20 pt duck
-
-        // x -19 y 24 pt duck scan
-
-        // x -37 y12 perpedincular cu shiphubu pt punerea duck
-
-        // x -23 y 29 parking
+        TrajectorySequence iacub = drive.trajectorySequenceBuilder(aliniere1.end())
+                .lineToLinearHeading(new Pose2d(11,-59,Math.toRadians(0)))
+                .lineTo(
+                        new Vector2d(50, -59),
+                        SampleMecanumDrive.getVelocityConstraint(10,90, 90),
+                        SampleMecanumDrive.getAccelerationConstraint(10)
+                )
+                .addTemporalMarker(0.3,()->
+                {
+                    cleste.setPosition(0.85);
+                    rotire.setTargetPosition(5);
+                    rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    rotire.setPower(-0.5);
+                })
+                .build();
+        TrajectorySequence aliniere2 =drive.trajectorySequenceBuilder(iacub.end())
+                .lineTo(new Vector2d(11,-63))
+                .lineToLinearHeading(new Pose2d(-11.5,-43,Math.toRadians(-90)))
+                .addTemporalMarker(0.3,()->
+                {
+                    rotire.setTargetPosition(-1200);
+                    rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    rotire.setPower(-0.5);
+                })
+                .build();
+        TrajectorySequence parcare = drive.trajectorySequenceBuilder(aliniere2.end())
+                .lineToLinearHeading(new Pose2d(11,-63,Math.toRadians(0)))
+                .lineTo(new Vector2d(50, -59))
+                .addTemporalMarker(0.1,()->
+                {
+                    rotire.setTargetPosition(5);
+                    rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    rotire.setPower(-0.5);
+                })
+                .build();
 
         //----------------------------------------------------------------------------------------------
 
@@ -123,7 +144,7 @@ public class auto_redint extends LinearOpMode {
             //scimbat zona 1 cu zona 3 pt ca capera era poz gresit
             if (left_avg <= 126)
                 zone = 3;
-            else if (right_avg <= 122)
+            else if (right_avg <= 126)
                 zone = 2;
             else
                 zone = 1;
@@ -134,9 +155,45 @@ public class auto_redint extends LinearOpMode {
 
             telemetry.update();
         }
-        drive.followTrajectorySequence(linie);
+        cleste.setPosition(1);
+        sleep(1000);
+        drive.followTrajectorySequence(aliniere1);
+        sleep(1000);
+        switch (zone)
+        {
+            case 1:
+                rotire.setTargetPosition(-1800);
+                rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                rotire.setPower(-0.5);
 
+                break;
+            case 2:
+                rotire.setTargetPosition(-1575);
+                rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                rotire.setPower(-0.5);
 
+                break;
+
+            case 3:
+                rotire.setTargetPosition(-1200);
+                rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                rotire.setPower(-0.5);
+
+                break;
+        }
+        sleep(1000);
+        cleste.setPosition(0.85);
+        sleep(1000);
+//        cleste.setPosition(1);
+//        sleep(500);
+//        drive.followTrajectorySequence(iacub);
+//        cleste.setPosition(1);
+//        drive.followTrajectorySequence(aliniere2);
+//        cleste.setPosition(0.85);
+//        sleep(500);
+//        cleste.setPosition(1);
+//        sleep(500);
+        drive.followTrajectorySequence(parcare);
 
 
 

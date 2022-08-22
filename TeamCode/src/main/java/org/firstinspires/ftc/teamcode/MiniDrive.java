@@ -108,31 +108,31 @@
              {
                  rotire.setTargetPosition(-1300);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(-0.6);
+                 rotire.setPower(-0.4);
              }
              if(gamepad2.square)
              {
                  rotire.setTargetPosition(-1600);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(-0.6);
+                 rotire.setPower(-0.4);
              }
              if(gamepad2.circle)
              {
                  rotire.setTargetPosition(-1800);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(-0.6);
+                 rotire.setPower(-0.4);
              }
              if(gamepad2.triangle)
              {
                  rotire.setTargetPosition(5);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(0.6);
+                 rotire.setPower(0.4);
              }
              if(gamepad2.dpad_down)
              {
                  rotire.setTargetPosition(-1770);
                  rotire.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                 rotire.setPower(-0.6);
+                 rotire.setPower(-0.4);
              }
              if(gamepad2.dpad_up)
              {
@@ -152,13 +152,14 @@
 
              if(gamepad1.cross)
              {
-                 cleste.setPosition(0.5);
+                 cleste.setPosition(0.85);
              }
              if(gamepad1.square)
              {
                  cleste.setPosition(1);
              }
              telemetry.addData("Rotire",rotire.getCurrentPosition());
+             telemetry.addData("cletste",cleste.getPosition());
              telemetry.update();
 
          }

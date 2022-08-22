@@ -123,7 +123,7 @@ public class auto_redext extends LinearOpMode {
             //scimbat zona 1 cu zona 3 pt ca capera era poz gresit
             if (left_avg <= 126)
                 zone = 3;
-            else if (right_avg <= 122)
+            else if (right_avg <= 126)
                 zone = 2;
             else
                 zone = 1;
